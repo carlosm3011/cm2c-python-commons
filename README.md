@@ -12,3 +12,4 @@ Commonly useful libraries, grouped in a single repository.
 ### Data Import
 
 #### CSVImport
+Automatic CSV into SQLite3 file import.
