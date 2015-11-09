@@ -1,6 +1,10 @@
 '''
 Created on Sep 18, 2013
 
+Updates:
+
+20151109: integrated into cm2c-commons module
+
 @author: marcelo
 
 @todo: better automation
@@ -8,7 +12,7 @@ Created on Sep 18, 2013
 
 import sqlite3
 import gzip
-import commons.statkeeper
+import cm2c.commons.debug.statkeeper
 import sys
 import csv
 
