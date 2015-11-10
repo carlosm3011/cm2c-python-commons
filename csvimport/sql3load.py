@@ -12,7 +12,7 @@ Updates:
 
 import sqlite3
 import gzip
-import cm2c.commons.debug.statkeeper
+from cm2c.commons.debug.statkeeper import statkeeper
 import sys
 import csv
 
@@ -34,7 +34,7 @@ class sql3load(object):
         #
         self.record_tpl = w_record_tpl
         self.columns= []
-        self.sk = commons.statkeeper.statkeeper()
+        self.sk = statkeeper()
         #
         try:
             if w_file_name:
