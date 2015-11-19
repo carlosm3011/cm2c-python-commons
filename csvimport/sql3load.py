@@ -12,7 +12,7 @@ Updates:
 
 import sqlite3
 import gzip
-from cm2c.commons.debug.statkeeper import statkeeper
+from debug.statkeeper import statkeeper
 import sys
 import csv
 
