@@ -6,27 +6,27 @@
 
 
 #===============================================================================
-# Copyright (c) 2012 LACNIC - Latin American and Caribbean Internet 
+# Copyright (c) 2012 LACNIC - Latin American and Caribbean Internet
 # Address Registry
-# 
-# Permission is hereby granted, free of charge, to any person 
-# obtaining a copy of this software and associated documentation 
-# files (the "Software"), to deal in the Software without 
-# restriction, including without limitation the rights to use, copy, 
-# modify, merge, publish, distribute, sublicense, and/or sell copies 
-# of the Software, and to permit persons to whom the Software is 
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be 
+#
+# The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
-# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
-# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #===============================================================================
 
@@ -37,10 +37,10 @@ import ipaddr
 import time
 import json
 
-## counter class
+## Counter keeper class
 class statkeeper():
     """
-    This class implements a generic statistic counter. Statistics are stored as 'keys' and can 
+    This class implements a generic counter keeper. Counters are stored as 'keys' and can
     be incremented by 1 or by an arbitrary number and can be printed just with 'print'
     """
     def __init__(self):
@@ -49,7 +49,7 @@ class statkeeper():
     def incKey(self, w_key, w_increment = 1):
         """
         Increment key w_key by w_increment.
-        
+
         :param w_key: (str) key name
         :param w_increment: (int) increment value, defaults to 1
         """
@@ -72,19 +72,19 @@ class statkeeper():
         Returns all available keys in JSON format
         '''
         return json.dumps(self.keys)
-    
+
     #
     def setKey(self, w_key, w_value=0):
         '''
         Set key value. Defaults to zero.
         '''
         self.keys['w_key'] = w_value
-    
+
     #
     def __repr__(self):
         rs = ""
         for k in self.keys.keys():
-            rs = rs + "%s: %s\n" % (k, self.keys[k]) 
+            rs = rs + "%s: %s\n" % (k, self.keys[k])
         return rs
     #
     def add_merge(self, w_sk):
@@ -92,7 +92,7 @@ class statkeeper():
         Additive merge of two sk's. The behaviour is as follows:
         - keys that do not exist in one of the sk's are copied into the recipient sk
         - keys that hold NUMERIC values and exist in both sk's are ADDED
-        - keys that do not hold NUMERIC values and that exist on both are IGNORED 
+        - keys that do not hold NUMERIC values and that exist on both are IGNORED
             (meaning the value stored in the recipient is maintained)
         """
         for wk in self.keys.keys():
@@ -124,5 +124,4 @@ if __name__ == "__main__":
     sk1.add_merge(sk2)
     print sk1.getJSON()
     #
-
 ##

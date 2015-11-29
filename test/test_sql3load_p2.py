@@ -1,3 +1,4 @@
+##-----------------------------------------------------------------------------------------------------
 '''
 Test Battery for the SQL3 CSV Import
 Created on Nov 23, 2015
@@ -17,10 +18,8 @@ from csvimport.sql3load import sql3load
 class Test(unittest.TestCase):
 
     def setUp(self):
-        #sys.stderr.write("Creating sql3load class instance\n")
         self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
         self.s3_template = [ ('name', 'text'), ('age', 'integer'), ('weigth', 'float') ]
-        #se    lf.s3l = sql3load(self.s3_template)
         self.s3l = sql3load(self.s3_template, get_tmp_fn(".db") )
     ## end
 
@@ -36,3 +35,6 @@ class Test(unittest.TestCase):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
+
+## END File
+##-----------------------------------------------------------------------------------------------------
