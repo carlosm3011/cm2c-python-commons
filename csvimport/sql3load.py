@@ -12,9 +12,9 @@ Updates:
 
 import sqlite3
 import gzip
-from debug.statkeeper import statkeeper
 import sys
 import csv
+from cm2c.commons.debug.statkeeper import statkeeper
 
 class sql3load(object):
     '''
