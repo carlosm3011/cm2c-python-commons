@@ -10,8 +10,8 @@ import unittest
 import sys
 import uuid
 
-from gen.utils import get_tmp_fn
-from csvimport.sql3load import sql3load
+from cm2c.commons.gen.utils import get_tmp_fn
+from cm2c.commons.csvimport.sql3load import sql3load
 
 #--
 class Test(unittest.TestCase):
@@ -49,14 +49,14 @@ class Test(unittest.TestCase):
         pass
 
     def testImportCommaSeparatedFile(self):
-        r = self.s3l.importFile("test/test-import.txt")
+        r = self.s3l.importFile("cm2c/commons/test/test-import.txt")
         self.assertTrue(r>0, "Number of lines read should be larger than 0 but is %s" % (r))
         #
         r = self.s3l.query("name = 'marcelo'")
         self.assertTrue(r[0]['age']==41, "marcelo's age should be 41 but is %s" % (r[0]['age']))
 
     def testImportTabSeparatedFile(self):
-        r = self.s3l.importFile("test/test-import2.txt", '\t')
+        r = self.s3l.importFile("cm2c/commons/test/test-import2.txt", '\t')
         self.assertTrue(r>0, "Number of lines read should be larger than 0 but is %s" % (r))
 
     #def testRowCount1(self):

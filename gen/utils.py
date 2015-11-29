@@ -4,7 +4,7 @@ Created on Sep 3, 2013
 @author: marcelo
 '''
 
-import etc.properties
+from cm2c.commons.etc import properties
 import tempfile
 import os
 import json
@@ -18,7 +18,7 @@ def get_tmp_fn(w_suffix = None):
     tmp_fname = tempfile.NamedTemporaryFile().name
     fname = os.path.basename(tmp_fname)
 
-    tmp_file = "%s/%s%s" % (etc.properties.paths['tmp'], fname, w_suffix)
+    tmp_file = "%s/%s%s" % (properties.paths['tmp'], fname, w_suffix)
     return tmp_file
 
 ### end

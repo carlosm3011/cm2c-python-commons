@@ -11,8 +11,8 @@ import unittest
 import sys
 import uuid
 
-from gen.utils import get_tmp_fn
-from csvimport.sql3load import sql3load
+from cm2c.commons.gen.utils import get_tmp_fn
+from cm2c.commons.csvimport.sql3load import sql3load
 
 #--
 class Test(unittest.TestCase):
