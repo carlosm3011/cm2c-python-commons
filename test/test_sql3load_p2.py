@@ -21,6 +21,8 @@ class Test(unittest.TestCase):
         self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
         self.s3_template = [ ('name', 'text'), ('age', 'integer'), ('weigth', 'float') ]
         self.s3l = sql3load(self.s3_template, get_tmp_fn(".db") )
+        r = self.s3l.importFile("test/test-import.txt")
+        self.s3l.addMetaColumn("cDoubleAge VARCHAR(80)")
     ## end
 
     def tearDown(self):
@@ -30,10 +32,28 @@ class Test(unittest.TestCase):
     def testClassInstantiation(self):
         # test relies on logic put in the setUp method
         pass
+    ## end
+
+    def testAddColumn(self):
+        r = self.s3l._rawQuery("SELECT COUNT(cDoubleAge) AS count FROM $TN$"  )
+        # print "testCountNewColumn r %s" % (r)
+        self.assertTrue(r[0]['count']==0)
+    ## end testAddColumn
+
+    ## begin
+    def testCalculateValuesForNewColumn(self):
+        self.s3l.calculateMetaColumn("cDoubleAge", lambda x : x['age'] * 2)
+        r = self.s3l._rawQuery("SELECT COUNT(cDoubleAge) AS count FROM $TN$")
+        # print "testCountNewColumn r %s" % (r)
+        self.assertTrue(r[0]['count']==5)
+        pass
+    ## end
+
 ## end class Test
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
+    print "TEST Battery: add new columns and calculate column values"
     unittest.main()
 
 ## END File

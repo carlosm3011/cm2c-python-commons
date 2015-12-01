@@ -22,17 +22,17 @@ class sql3load(object):
     '''
 
     ### begin
-    def __init__(self, w_record_tpl, w_file_name = None):
+    def __init__(self, w_record_tpl, w_file_name = None, w_table_name = "imported_data"):
         '''
         Default constructor
         :param w_record_tpl : record template, an array of tuples with the format ('col name', 'col type', 'col desc') where col_type is a valid sqlite3 type and col_desc is an optional column description.
         :param w_file_name  : file name for the database. If None the database will be created in RAM.
         '''
         #
-        self.table_name = "imported_data"
+        self.table_name = w_table_name
         #
         self.record_tpl = w_record_tpl
-        self.columns= []
+        self.columns = []
         self.sk = statkeeper()
         #
         try:
@@ -64,6 +64,11 @@ class sql3load(object):
         except:
             raise
     ### end
+
+    ## begin
+    def getTableName(self):
+        return self.table_name
+    ## end
 
     ## begin
     def __del__(self):
@@ -102,7 +107,7 @@ class sql3load(object):
         return dict(row)['CNT']
     ## end
 
-    ## begin
+    ## begin query
     def query(self, w_query, w_parameters = {}):
         """
         Runs an arbitrary SQL query against the newly created database.
@@ -126,6 +131,34 @@ class sql3load(object):
         except:
             raise
     ## end
+
+    ## begin query
+    def _rawQuery(self, w_query, w_parameters = {}):
+        """
+        Runs an arbitrary FULL SQL query against the newly created database.
+
+        :param w_query: the query itself using named parameters for column values, as in:
+                        'origin_as=:oas'
+                        the query string should include a $TN$ as a placeholder for the table name, it will
+                        be automatically replaced by the current table name
+
+        :param w_parameters: an associative array with parameter values. Must be consistent with the names used for wquery, as in:
+                            {'oas': '28000'}
+        """
+        sql = w_query.replace("$TN$", self.table_name)
+        try:
+            qr = self.cursor.execute(sql, w_parameters)
+            ar = []
+            for x in qr:
+                ar.append(dict(x))
+            return ar
+        except sqlite3.Error as e:
+            raise e
+            return None
+        except:
+            raise
+    ## end
+
 
     ## begin
     def importFile(self, w_file_name, w_delimiter=',', w_callback= lambda x:x, w_callback_steps=10):
@@ -175,12 +208,42 @@ class sql3load(object):
     ## end
 
     ## begin
-    def addMetaColumn(self, w_name, w_callback= lambda x:x):
+    def addMetaColumn(self, w_column_def = "colName VARCHAR(80)"):
         '''
         Adds a new column to the database. After the structure is modified, the column values will be updated
         by calling the w_callback function on all records.
         '''
+        res = False
+        try:
+            sql = "ALTER TABLE %s ADD COLUMN %s " % (self.table_name, w_column_def)
+            self._rawQuery(sql)
+            res = True
+        except:
+            raise
+        #
+        return res
         pass
+    ## end
+
+    ## begin
+    def calculateMetaColumn(self, w_column, w_callback):
+        '''
+        Calculates values for one of the columns, as a function of the remaining columns.
+        '''
+        try:
+            sql = "SELECT * FROM %s WHERE %s" % (self.table_name, "1=1")
+            self.cursor2 = self.conn.cursor()
+            qr = self.cursor.execute(sql)
+            for row in qr:
+                new_value = w_callback(row)
+                sql_update = "UPDATE %s SET %s = :value WHERE id = :id" % (self.table_name, w_column)
+                sql_update_parameters = {"id": row['id'], "column": w_column, "value": new_value}
+                # print "sqlu par %s\n" % sql_update_parameters
+                self.cursor2.execute(sql_update, sql_update_parameters)
+                #
+            self.conn.commit()
+        except:
+            raise
     ## end
 
 ## end class sql3load
