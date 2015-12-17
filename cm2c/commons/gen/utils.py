@@ -4,7 +4,7 @@ Created on Sep 3, 2013
 @author: marcelo
 '''
 
-from cm2c.commons.etc import properties
+from cm2c.etc import properties
 import tempfile
 import os
 import json
