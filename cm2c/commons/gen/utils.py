@@ -28,7 +28,7 @@ def json_load(w_file_name):
     '''
     Loads a json file from disk into a in-memory structure
     '''
-    fn = "%s/%s" % (etc.properties.srchome, w_file_name )
+    fn = "%s/%s" % (properties.srchome, w_file_name )
     try:
         cc_file = open(fn)
         cc_json = json.load(cc_file)
