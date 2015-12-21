@@ -62,6 +62,7 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=10*1024):
         if os.path.exists(w_file_name):
             mtime = os.stat(w_file_name).st_mtime
         now = time.time()
+        # dprint("now: %s, mtime: %s" % (now, mtime))
         if now-mtime >= w_update:
             uh = urllib2.urlopen(w_url)
             lfh = open(w_file_name, "wb+")

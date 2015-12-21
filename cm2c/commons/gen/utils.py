@@ -10,14 +10,18 @@ import os
 import json
 
 ### begin
-def get_tmp_fn(w_suffix = None):
+def get_tmp_fn(w_suffix = None, **kwargs):
     '''
     returns a full path to a temp file name, using the current system properties
-    if filename is None then a random name is created
+    :param filename: if named parameter 'filename' is None then a random name is created
     '''
-    tmp_fname = tempfile.NamedTemporaryFile().name
+    tmp_fname = kwargs.get('filename', None)
+    if tmp_fname == None:
+        tmp_fname = tempfile.NamedTemporaryFile().name
     fname = os.path.basename(tmp_fname)
 
+    if w_suffix == None:
+        w_suffix = ""
     tmp_file = "%s/%s%s" % (properties.paths['tmp'], fname, w_suffix)
     return tmp_file
 

@@ -168,6 +168,7 @@ class sql3load(object):
 
         :param w_fname: file name of the CSV file to import.
         :param w_delimiter: delimiter char, defaults to comma but can be also \t
+        :param w_callback: function to call when adding calculated values
         '''
         #
         # init variables
@@ -183,15 +184,18 @@ class sql3load(object):
             for row in csv_r:
                 record = {}
                 ix = 0
-                if len(row) == len(self.record_tpl):
-                    for col in self.record_tpl:
+                # if len(row) == len(self.record_tpl):
+                for col in self.record_tpl:
+                    if ix<len(row):
                         record[col[0]] = row[ix].strip()
                         ix = ix + 1
-                    #
-                    self._insert_row(record)
-                    self.sk.incKey('inserted-rows')
-                else:
-                    self.sk.incKey('invalid-rows')
+                    else:
+                        record[col[0]] = None
+                        # print "invalid row: %s, len %s, expected len %s" % (str(row), len(row), len(self.record_tpl))
+                        self.sk.incKey('invalid-rows')
+                #
+                self._insert_row(record)
+                self.sk.incKey('inserted-rows')
                 #
             #
             return ix
@@ -212,6 +216,8 @@ class sql3load(object):
         '''
         Adds a new column to the database. After the structure is modified, the column values will be updated
         by calling the w_callback function on all records.
+
+        Example: addMetaColumn("age INTEGER")
         '''
         res = False
         try:
@@ -222,7 +228,6 @@ class sql3load(object):
             raise
         #
         return res
-        pass
     ## end
 
     ## begin
