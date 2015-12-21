@@ -233,7 +233,8 @@ class sql3load(object):
     ## begin
     def calculateMetaColumn(self, w_column, w_callback):
         '''
-        Calculates values for one of the columns, as a function of the remaining columns.
+        Calculates values for one of the columns as a function of the remaining columns.
+        :param w_callback: a callback function that returns a new value for a given row.
         '''
         try:
             sql = "SELECT * FROM %s WHERE %s" % (self.table_name, "1=1")
@@ -246,9 +247,12 @@ class sql3load(object):
                 # print "sqlu par %s\n" % sql_update_parameters
                 self.cursor2.execute(sql_update, sql_update_parameters)
                 #
-            self.conn.commit()
+            # end for
+            r = self.conn.commit()
+            return r
         except:
             raise
+        return False
     ## end
 
 ## end class sql3load
