@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         #sys.stderr.write("Creating sql3load class instance\n")
-        self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
+        # self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
         self.s3_template = [ ('name', 'text'), ('age', 'integer'), ('weigth', 'float') ]
         #se    lf.s3l = sql3load(self.s3_template)
         self.s3l = sql3load(self.s3_template, get_tmp_fn(".db") )
@@ -56,8 +56,10 @@ class Test(unittest.TestCase):
         self.assertTrue(r[0]['age']==41, "marcelo's age should be 41 but is %s" % (r[0]['age']))
 
     def testImportTabSeparatedFile(self):
-        r = self.s3l.importFile("test/test-import2.txt", '\t')
-        self.assertTrue(r>0, "Number of lines read should be larger than 0 but is %s" % (r))
+        self.s3l2 = sql3load(self.s3_template, get_tmp_fn("islas.db"), "\t")
+        r = self.s3l2.importFile("test/test-import2.txt")
+        # print "imported rows %s" % (r)
+        self.assertTrue(r>3, "Number of lines read should be larger than 3 but is %s" % (r))
 
     #def testRowCount1(self):
     #    r = self.s3l.get_rowcount()

@@ -22,7 +22,7 @@ class sql3load(object):
     '''
 
     ### begin
-    def __init__(self, w_record_tpl, w_file_name = None, w_table_name = "imported_data"):
+    def __init__(self, w_record_tpl, w_file_name = None, w_delimiter=",", w_table_name = "imported_data"):
         '''
         Default constructor
         :param w_record_tpl : record template, an array of tuples with the format ('col name', 'col type', 'col desc') where col_type is a valid sqlite3 type and col_desc is an optional column description.
@@ -30,6 +30,7 @@ class sql3load(object):
         '''
         #
         self.table_name = w_table_name
+        self.delimiter = w_delimiter
         #
         self.record_tpl = w_record_tpl
         self.columns = []
@@ -161,7 +162,7 @@ class sql3load(object):
 
 
     ## begin
-    def importFile(self, w_file_name, w_delimiter=',', w_callback= lambda x:x, w_callback_steps=10):
+    def importFile(self, w_file_name, w_callback= lambda x:x, w_callback_steps=10):
         '''
         Imports delimiter-separated file into memory database. If the filename ends in '.gz', importFile()
         will try to open it using the gzip module.
@@ -179,7 +180,7 @@ class sql3load(object):
                 self.file = open(w_file_name, 'rb')
             #
             self._stats = {}
-            csv_r = csv.reader(self.file, delimiter=w_delimiter)
+            csv_r = csv.reader(self.file, delimiter=self.delimiter)
             # row = True
             for row in csv_r:
                 record = {}
@@ -198,7 +199,7 @@ class sql3load(object):
                 self.sk.incKey('inserted-rows')
                 #
             #
-            return ix
+            return self.sk.getKey('inserted-rows')
         except:
             raise
     ## end
