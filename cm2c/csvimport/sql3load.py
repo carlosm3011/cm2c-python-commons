@@ -93,7 +93,7 @@ class sql3load(object):
         except:
             raise
         #
-        self.conn.commit()
+        # self.conn.commit() // committing here makes everything slooooow
         return r
     ## end
 
@@ -197,8 +197,11 @@ class sql3load(object):
                 #
                 self._insert_row(record)
                 self.sk.incKey('inserted-rows')
+                if self.sk.getKey('inserted-rows') % w_callback_steps == 0:
+                    w_callback(self.sk)
                 #
             #
+            self.conn.commit()
             return self.sk.getKey('inserted-rows')
         except:
             raise
@@ -251,6 +254,8 @@ class sql3load(object):
             # end for
             r = self.conn.commit()
             return r
+        except OverflowError:
+            print "Number too large in row %s, update parameters %s " % (dict(row), sql_update_parameters)
         except:
             raise
         return False
