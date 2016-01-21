@@ -22,11 +22,12 @@ class sql3load(object):
     '''
 
     ### begin
-    def __init__(self, w_record_tpl, w_file_name = None, w_delimiter=",", w_table_name = "imported_data"):
+    def __init__(self, w_record_tpl, w_file_name = None, w_delimiter=",", w_table_name = "imported_data", **kwargs):
         '''
         Default constructor
         :param w_record_tpl : record template, an array of tuples with the format ('col name', 'col type', 'col desc') where col_type is a valid sqlite3 type and col_desc is an optional column description.
         :param w_file_name  : file name for the database. If None the database will be created in RAM.
+        :param as_cache     : If True no DROP/CREATE of the database tables will occur and an attempt will be made to use already existing data. Defaults to False.
         '''
         #
         self.table_name = w_table_name
@@ -35,6 +36,8 @@ class sql3load(object):
         self.record_tpl = w_record_tpl
         self.columns = []
         self.sk = statkeeper()
+        #
+        self.as_cache = kwargs.get('as_cache', False)
         #
         try:
             if w_file_name:
@@ -46,22 +49,24 @@ class sql3load(object):
             self.conn.row_factory = sqlite3.Row
             self.cursor = self.conn.cursor()
             #
-            self.cursor.execute(" DROP TABLE IF EXISTS %s" % (self.table_name) )
-            self.conn.commit()
+            if not self.as_cache:
+                self.cursor.execute(" DROP TABLE IF EXISTS %s" % (self.table_name) )
+                self.conn.commit()
+                self.cursor.execute(" CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY)" % (self.table_name) )
 
-            self.cursor.execute(" CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY)" % (self.table_name) )
+                # loop and add columns
+                # for col_name in w_record_tpl.keys():
+                for col in self.record_tpl:
+                    col_name = col[0]
+                    col_type = col[1]
+                    sql = "ALTER TABLE %s ADD COLUMN %s %s" % (self.table_name, col_name, col_type)
+                    self.columns.append(col_name)
+                    self.cursor.execute(sql)
+                # end for
+                self.conn.commit()
+            else:
+                return self.get_rowcount()
 
-            # loop and add columns
-            # for col_name in w_record_tpl.keys():
-            for col in self.record_tpl:
-                col_name = col[0]
-                col_type = col[1]
-                sql = "ALTER TABLE %s ADD COLUMN %s %s" % (self.table_name, col_name, col_type)
-                self.columns.append(col_name)
-                self.cursor.execute(sql)
-            # end for
-
-            self.conn.commit()
         except:
             raise
     ### end
