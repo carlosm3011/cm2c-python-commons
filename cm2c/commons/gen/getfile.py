@@ -36,7 +36,7 @@ from cm2c.commons.gen.utils import get_tmp_fn
 
 
 ## get file ########################################################################
-def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=10*1024):
+def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
     """
     Downloads a file object pointed by w_url and stores it on local file w_file_name.
     The w_update parameter marks how old the file can be. Files are only downloaded
@@ -49,12 +49,17 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=10*1024):
                         getfile will choose a random temp file name and, on success, will return this name
     :param ch_size: Progress bar ticker step.
 
-    :return : file name of the locally-save copy.
+    :return : file name of the locally-saved copy.
 
     """
 
     if w_file_name == None:
         w_file_name = get_tmp_fn()
+
+    if ch_size == 0:
+        log_level = 0
+    else:
+        log_level = 3
 
     try:
         dprint("Getting "+w_url+": ")
@@ -77,7 +82,7 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=10*1024):
             #
             return w_file_name
         else:
-            dprint("File exists and still fresh (%s secs old) \n" % (now-mtime) )
+            dprint("File exists and still fresh (%s secs old) \n" % (now-mtime))
             return w_file_name
     except urllib2.URLError as e:
         raise

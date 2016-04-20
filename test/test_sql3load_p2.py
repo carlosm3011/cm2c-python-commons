@@ -18,9 +18,9 @@ from cm2c.csvimport.sql3load import sql3load
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
         self.s3_template = [ ('name', 'text'), ('age', 'integer'), ('weigth', 'float') ]
-        self.s3l = sql3load(self.s3_template, get_tmp_fn(".db") )
+        self.db_fn = get_tmp_fn(".db")
+        self.s3l = sql3load(self.s3_template, self.db_fn )
         r = self.s3l.importFile("test/test-import.txt")
         self.s3l.addMetaColumn("cDoubleAge VARCHAR(80)")
     ## end
@@ -48,6 +48,13 @@ class Test(unittest.TestCase):
         self.assertTrue(r[0]['count']==5)
         pass
     ## end
+
+    ##begin
+    def testMultipleCSVImport(self):
+        self.islands_tpl = [('name', 'text'), ('pop', 'integer'), ('discovered', 'integer') ]
+        self.islands_loader = sql3load(self.islands_tpl, self.db_fn, '\t', "islands")
+        r = self.islands_loader.importFile("test/test-import2.txt")
+    ##end
 
 ## end class Test
 
