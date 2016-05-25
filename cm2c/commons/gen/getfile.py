@@ -57,36 +57,46 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
         w_file_name = get_tmp_fn()
 
     if ch_size == 0:
-        log_level = 0
+        log_level = 3
     else:
         log_level = 3
 
+    dp = dprint(log_level)
+
+    sys.stderr.write("entering try block\n")
     try:
-        dprint("Getting "+w_url+": ")
+        dp.log("Getting "+w_url+": ")
         mtime = 0
         if os.path.exists(w_file_name):
             mtime = os.stat(w_file_name).st_mtime
         now = time.time()
         # dprint("now: %s, mtime: %s" % (now, mtime))
         if now-mtime >= w_update:
+            sys.stderr.write("opening url\n")
             uh = urllib2.urlopen(w_url)
+            sys.stderr.write("creating local file\n")
             lfh = open(w_file_name, "wb+")
             # lfh.write(uh.read())
             while True:
-                data = uh.read(ch_size)
+                # data = uh.read(ch_size)
+                data = uh.read(1024)
                 if not data:
-                    dprint(": done!")
+                    dp.log(": done!")
                     break
                 lfh.write(data)
                 sys.stderr.write(".")
             #
             return w_file_name
         else:
-            dprint("File exists and still fresh (%s secs old) \n" % (now-mtime))
+            dp.log("File exists and still fresh (%s secs old) \n" % (now-mtime))
             return w_file_name
-    except urllib2.URLError as e:
-        raise
-        print "URL Error", e.code, w_url
+    except urllib2.HTTPError as e:
+        # raise
+        dp.log("HTTP Error %s, %s\n" % (e.code, w_url))
+        return False
+    except urllib2.URLError as f:
+        dp.log("URL Error reason: %s, url: %s\n" % (f.reason, w_url))
+        # dprint("URLError")
         return False
     except:
         raise
