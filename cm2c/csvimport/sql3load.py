@@ -65,8 +65,12 @@ class sql3load(object):
                 # end for
                 self.conn.commit()
             else:
-                return self.get_rowcount()
-
+                for col in self.record_tpl:
+                    col_name = col[0]
+                    col_type = col[1]
+                    self.columns.append(col_name)
+                # return self.get_rowcount()
+                return
         except:
             raise
     ### end
@@ -96,6 +100,7 @@ class sql3load(object):
             self.cursor.execute(sql, w_record)
             r = True
         except:
+            sys.stderr.write('sql error! sql: %s' % (sql))
             raise
         #
         # self.conn.commit() // committing here makes everything slooooow
@@ -188,6 +193,9 @@ class sql3load(object):
             csv_r = csv.reader(self.file, delimiter=self.delimiter)
             # row = True
             for row in csv_r:
+                if row[0].startsWith("#"):
+                    # skip comments
+                    continue
                 record = {}
                 ix = 0
                 # if len(row) == len(self.record_tpl):
@@ -230,9 +238,10 @@ class sql3load(object):
         '''
         res = False
         try:
-            sql = "ALTER TABLE %s ADD COLUMN %s " % (self.table_name, w_column_def)
-            self._rawQuery(sql)
-            res = True
+            if not self.as_cache:
+                sql = "ALTER TABLE %s ADD COLUMN %s " % (self.table_name, w_column_def)
+                self._rawQuery(sql)
+                res = True
         except:
             raise
         #

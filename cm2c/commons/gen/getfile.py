@@ -57,13 +57,13 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
         w_file_name = get_tmp_fn()
 
     if ch_size == 0:
-        log_level = 3
+        log_level = 0
     else:
         log_level = 3
 
     dp = dprint(log_level)
 
-    sys.stderr.write("entering try block\n")
+    dp.log("entering try block\n")
     try:
         dp.log("Getting "+w_url+": ")
         mtime = 0
@@ -72,9 +72,9 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
         now = time.time()
         # dprint("now: %s, mtime: %s" % (now, mtime))
         if now-mtime >= w_update:
-            sys.stderr.write("opening url\n")
+            # sys.stderr.write("opening url\n")
             uh = urllib2.urlopen(w_url)
-            sys.stderr.write("creating local file\n")
+            # sys.stderr.write("creating local file\n")
             lfh = open(w_file_name, "wb+")
             # lfh.write(uh.read())
             while True:
@@ -84,7 +84,7 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
                     dp.log(": done!")
                     break
                 lfh.write(data)
-                sys.stderr.write(".")
+                dp.log(".")
             #
             return w_file_name
         else:
