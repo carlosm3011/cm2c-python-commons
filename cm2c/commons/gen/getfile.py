@@ -63,7 +63,7 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
 
     dp = dprint(log_level)
 
-    dp.log("entering try block\n")
+    dp.log("entering try block\n", 5)
     try:
         dp.log("Getting "+w_url+": ")
         mtime = 0

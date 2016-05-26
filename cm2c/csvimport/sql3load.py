@@ -38,6 +38,7 @@ class sql3load(object):
         self.sk = statkeeper()
         #
         self.as_cache = kwargs.get('as_cache', False)
+        self.comments_mark = kwargs.get('comments_mark', False)
         #
         try:
             if w_file_name:
@@ -193,9 +194,10 @@ class sql3load(object):
             csv_r = csv.reader(self.file, delimiter=self.delimiter)
             # row = True
             for row in csv_r:
-                if row[0].startsWith("#"):
-                    # skip comments
-                    continue
+                if self.comments_mark:
+                    if row[0].startswith(self.comments_mark):
+                        # skip comments
+                        continue
                 record = {}
                 ix = 0
                 # if len(row) == len(self.record_tpl):

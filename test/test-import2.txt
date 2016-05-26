@@ -1,3 +1,6 @@
+# este es un comentario
+# este es otro comentario
+####
 curacao	140000	1492
 saba	8000	1570
 st.eustatius	1500	1642
