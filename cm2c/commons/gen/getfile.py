@@ -36,7 +36,7 @@ from cm2c.commons.gen.utils import get_tmp_fn
 
 
 ## get file ########################################################################
-def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
+def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=25):
     """
     Downloads a file object pointed by w_url and stores it on local file w_file_name.
     The w_update parameter marks how old the file can be. Files are only downloaded
@@ -77,14 +77,20 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=0):
             # sys.stderr.write("creating local file\n")
             lfh = open(w_file_name, "wb+")
             # lfh.write(uh.read())
+            blkcnt = 0
+            dp.log("\n")
             while True:
                 # data = uh.read(ch_size)
                 data = uh.read(1024)
+                blkcnt = blkcnt + 1
                 if not data:
-                    dp.log(": done!")
+                    dp.log("Done!\n")
                     break
                 lfh.write(data)
-                dp.log(".")
+                if blkcnt % ch_size != 0:
+                    dp.log(".")
+                else:
+                    dp.log("\r                                   \r")
             #
             return w_file_name
         else:
