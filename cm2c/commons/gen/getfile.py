@@ -57,9 +57,9 @@ def getfile(w_url, w_file_name = None, w_update = 3600, ch_size=25):
         w_file_name = get_tmp_fn()
 
     if ch_size == 0:
-        log_level = 0
+        log_level = 5
     else:
-        log_level = 3
+        log_level = 5
 
     dp = dprint(log_level)
 

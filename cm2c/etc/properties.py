@@ -7,7 +7,7 @@
 import os
 
 ## System paths
-srchome = os.environ.get('SRCHOME', '')
+srchome = os.environ.get('SRCHOME', os.getcwd())
 
 paths = { 'tmp': "%s/tmp" % (srchome),
           'etc': "%s/etc" % (srchome) }
