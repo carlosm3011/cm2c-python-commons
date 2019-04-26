@@ -17,12 +17,12 @@ from cm2c.commons.gen.getfile import getfile
 from cm2c.csvimport.sql3load import sql3load
 
 #--
-class Test(unittest.TestCase):
+class TestDownloadFilesFromInternet(unittest.TestCase):
 
     def setUp(self):
 	self.url = "http://www.lanacion.com.ar"
 	self.refresh = 10
-	self.local_file = "tmp/downloaded_data.txt" 
+	self.local_file = "tmp/downloaded_data.txt"
 	pass
     ## end
 
@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     ## end
 
     def testFileDownloadSizeGreaterThanZero(self):
-	getfile(self.url, self.local_file , self.refresh) 
+	getfile(self.url, self.local_file , self.refresh)
 	si = os.stat(self.local_file)
 	self.assertTrue(si.st_size>0)
 
