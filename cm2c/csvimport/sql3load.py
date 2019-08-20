@@ -28,6 +28,9 @@ class sql3load(object):
         :param w_record_tpl : record template, an array of tuples with the format ('col name', 'col type', 'col desc') where col_type is a valid sqlite3 type and col_desc is an optional column description.
         :param w_file_name  : file name for the database. If None the database will be created in RAM.
         :param as_cache     : If True no DROP/CREATE of the database tables will occur and an attempt will be made to use already existing data. Defaults to False.
+
+        Keyword parameters:
+           comments_mark : Lines beginning with this character will be considered remarks and not imported into the database. Defaults to '#'
         '''
         #
         self.table_name = w_table_name
@@ -38,7 +41,7 @@ class sql3load(object):
         self.sk = statkeeper()
         #
         self.as_cache = kwargs.get('as_cache', False)
-        self.comments_mark = kwargs.get('comments_mark', False)
+        self.comments_mark = kwargs.get('comments_mark', "#")
         #
         try:
             if w_file_name:
