@@ -198,6 +198,7 @@ class sql3load(object):
             # row = True
             for row in csv_r:
                 if self.comments_mark:
+                    print "%E %s".format(repr(row))
                     if row[0].startswith(self.comments_mark):
                         # skip comments
                         continue
