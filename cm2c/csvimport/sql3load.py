@@ -197,29 +197,34 @@ class sql3load(object):
             csv_r = csv.reader(self.file, delimiter=self.delimiter)
             # row = True
             for row in csv_r:
-                if self.comments_mark:
-                    print "%E %s".format(repr(row))
-                    if row[0].startswith(self.comments_mark):
-                        # skip comments
-                        continue
-                record = {}
-                ix = 0
-                # if len(row) == len(self.record_tpl):
-                for col in self.record_tpl:
-                    if ix<len(row):
-                        record[col[0]] = row[ix].strip()
-                        ix = ix + 1
-                    else:
-                        record[col[0]] = None
-                        # print "invalid row: %s, len %s, expected len %s" % (str(row), len(row), len(self.record_tpl))
-                        self.sk.incKey('invalid-rows')
-                #
-                self._insert_row(record)
-                self.sk.incKey('inserted-rows')
-                if self.sk.getKey('inserted-rows') % w_callback_steps == 0:
-                    w_callback(self.sk)
-                #
-            #
+                try:
+                    if self.comments_mark and len(row)>0:
+                        if row[0].startswith(self.comments_mark):
+                            # skip comments
+                            continue
+                    record = {}
+                    ix = 0
+                    # if len(row) == len(self.record_tpl):
+                    for col in self.record_tpl:
+                        if ix<len(row):
+                            record[col[0]] = row[ix].strip()
+                            ix = ix + 1
+                        else:
+                            record[col[0]] = None
+                            # print "invalid row: %s, len %s, expected len %s" % (str(row), len(row), len(self.record_tpl))
+                            self.sk.incKey('invalid-rows')
+                    #
+                    self._insert_row(record)
+                    self.sk.incKey('inserted-rows')
+                    if self.sk.getKey('inserted-rows') % w_callback_steps == 0:
+                        w_callback(self.sk)
+                    #
+                except IndexError:
+                    print "ROW in error: {}".format(repr(row))
+                    raise
+                except:
+                    raise
+            # end for row
             self.conn.commit()
             return self.sk.getKey('inserted-rows')
         except:

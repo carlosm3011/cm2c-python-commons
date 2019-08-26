@@ -20,6 +20,7 @@ class Test(unittest.TestCase):
         #sys.stderr.write("Creating sql3load class instance\n")
         # self.s3_template = [{'name': 'text'}, {'age': 'integer'}, {'weigth': 'float'}]
         self.s3_template = [ ('name', 'text'), ('age', 'integer'), ('weigth', 'float') ]
+        self.s4_template = [ ('asn', 'text'), ('prefix', 'text'), ('visible', 'integer') ]
         #se    lf.s3l = sql3load(self.s3_template)
         self.s3l = sql3load(self.s3_template, get_tmp_fn(".db") )
     ## end
@@ -60,6 +61,12 @@ class Test(unittest.TestCase):
         r = self.s3l2.importFile("test/test-import2.txt")
         # print "imported rows %s" % (r)
         self.assertTrue(r>3, "Number of lines read should be larger than 3 but is %s" % (r))
+
+    def testImportDifferentCommentMarkFile(self):
+        self.s3l2 = sql3load(self.s4_template, get_tmp_fn("riswhois.db"), " ", comments_mark='%')
+        r = self.s3l2.importFile("test/test-import3.txt")
+        # print "imported rows %s" % (r)
+        self.assertTrue(r>2, "Number of lines read should be larger than 2 but is %s" % (r))
 
     #def testRowCount1(self):
     #    r = self.s3l.get_rowcount()

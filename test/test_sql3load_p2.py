@@ -73,14 +73,15 @@ class Test(unittest.TestCase):
     ##begin
     def testSkipCommments2(self):
         self.islands_tpl = [('name', 'text'), ('pop', 'integer'), ('discovered', 'integer') ]
-        self.islands_loader = sql3load(self.islands_tpl, self.db_fn, '\t', "islands")
+        self.islands_loader = sql3load(self.islands_tpl, self.db_fn, '\t', "islands", comments_mark='')
         r = self.islands_loader.importFile("test/test-import2.txt")
         self.islands_loader2 = sql3load(self.islands_tpl, self.db_fn2, '\t', "islands", comments_mark="#")
         p = self.islands_loader2.importFile("test/test-import2.txt")
         #
         a = self.islands_loader.get_rowcount()
         b = self.islands_loader2.get_rowcount()
-        self.assertTrue(a>b, "Salteando comentarios, uno tiene que tener que tener menos lineas, x=%s, y=%s" % (a,b))
+        self.assertTrue(a>b, "Salteando comentarios, uno tiene que tener que tener menos lineas, %s=%s, %s=%s" % 
+            (self.db_fn,a,self.db_fn2,b))
     ##end
 
 ## end class Test
