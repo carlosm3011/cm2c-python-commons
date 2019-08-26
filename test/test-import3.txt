@@ -1,0 +1,19 @@
+%
+% This file was generated at Sun Aug 25 18:03:01 UTC 2019.
+% copy is available from http://www.ris.ripe.net/dumps/riswhoisdump.IPv4.gz
+%
+% This is RIPE NCC's Routing Information Service
+% whois gateway to collected BGP Routing Tables, version2.0
+% IPv4 or IPv6 address to origin prefix match
+%
+% For more information visit http://www.ripe.net/ris/riswhois.html
+%
+% Connected to backend ris-whois10.ripe.net
+
+% 
+% Full dump of combined RIS IPv4 routing tables
+% Format:  <origin> <tab> <prefix> <tab> <seen by #rispeers>
+% 
+58879   0.0.0.0/0       1
+55720   0.0.0.0/0       2
+201106  0.0.0.0/0       1
